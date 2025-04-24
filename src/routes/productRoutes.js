@@ -7,7 +7,7 @@ const pool = require('../config/database');
 // Get all products
 router.get('/', async (req, res) => {
     try {
-        const [products] = await pool.query('SELECT CONVERT(reference USING utf8) as reference, name, description, price, stock FROM Product');
+        const [products] = await pool.query('SELECT CONVERT(reference USING utf8) as reference, name, description, price FROM Product');
         res.json(products);
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 // Get product by ID
 router.get('/:id', async (req, res) => {
     try {
-        const [products] = await pool.query('SELECT CONVERT(reference USING utf8) as reference, name, description, price, stock FROM Product WHERE reference = ?', [req.params.id]);
+        const [products] = await pool.query('SELECT CONVERT(reference USING utf8) as reference, name, description, price FROM Product WHERE reference = ?', [req.params.id]);
         if (products.length === 0) {
             return res.status(404).json({ error: 'Product not found' });
         }
@@ -44,7 +44,7 @@ router.get('/:id/images', async (req, res) => {
 router.get('/category/:categoryId', async (req, res) => {
     try {
         const [products] = await pool.query(
-            'SELECT CONVERT(p.reference USING utf8) as reference, p.name, p.description, p.price, p.stock FROM Product p ' +
+            'SELECT CONVERT(p.reference USING utf8) as reference, p.name, p.description, p.price, p. FROM Product p ' +
             'JOIN Product_Category pc ON p.reference = pc.reference ' +
             'WHERE pc.id_category = ?',
             [req.params.categoryId]
@@ -59,7 +59,7 @@ router.get('/category/:categoryId', async (req, res) => {
 // Create a new product
 router.post('/', async (req, res) => {
     try {
-        const { reference, name, description, price, stock } = req.body;
+        const { reference, name, description, price } = req.body;
         
         // Validate required fields
         if (!reference || !name || !price) {
@@ -68,8 +68,8 @@ router.post('/', async (req, res) => {
 
         // Insert the product
         await pool.query(
-            'INSERT INTO Product (reference, name, description, price, stock) VALUES (?, ?, ?, ?, ?)',
-            [reference, name, description, price, stock || 0]
+            'INSERT INTO Product (reference, name, description, price) VALUES (?, ?, ?, ?, ?)',
+            [reference, name, description, price || 0]
         );
 
         res.status(201).json({ message: 'Product created successfully', reference });
@@ -82,7 +82,7 @@ router.post('/', async (req, res) => {
 // Update a product
 router.put('/:id', async (req, res) => {
     try {
-        const { name, description, price, stock } = req.body;
+        const { name, description, price } = req.body;
         
         // Check if product exists
         const [existingProduct] = await pool.query('SELECT * FROM Product WHERE reference = ?', [req.params.id]);
@@ -92,8 +92,8 @@ router.put('/:id', async (req, res) => {
 
         // Update the product
         await pool.query(
-            'UPDATE Product SET name = ?, description = ?, price = ?, stock = ? WHERE reference = ?',
-            [name, description, price, stock, req.params.id]
+            'UPDATE Product SET name = ?, description = ?, price = ? WHERE reference = ?',
+            [name, description, price, req.params.id]
         );
 
         res.json({ message: 'Product updated successfully' });
