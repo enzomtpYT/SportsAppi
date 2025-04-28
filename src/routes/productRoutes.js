@@ -68,7 +68,7 @@ router.post('/', async (req, res) => {
 
         // Insert the product
         await pool.query(
-            'INSERT INTO Product (reference, name, description, price) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO Product (reference, name, description, price) VALUES (?, ?, ?, ?)',
             [reference, name, description, price || 0]
         );
 
