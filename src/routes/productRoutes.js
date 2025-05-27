@@ -56,9 +56,8 @@ router.post('/:id/images', async (req, res) => {
             return res.status(404).json({ error: 'Product not found' });
         }
 
-        // We're adding both name field
         await pool.query(
-            'INSERT INTO Image (reference, name) VALUES (?, ?)',
+            'INSERT INTO Image (id_image, reference, name) VALUES (UUID(), ?, ?)',
             [req.params.id, name]
         );
 
