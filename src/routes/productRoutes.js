@@ -40,6 +40,35 @@ router.get('/:id/images', async (req, res) => {
     }
 });
 
+// Add image to a product
+router.post('/:id/images', async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        // Validate required fields
+        if (!name) {
+            return res.status(400).json({ error: 'Image Name is required' });
+        }
+
+        // Check if product exists
+        const [existingProduct] = await pool.query('SELECT * FROM Product WHERE reference = ?', [req.params.id]);
+        if (existingProduct.length === 0) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        // We're adding both name field
+        await pool.query(
+            'INSERT INTO Image (reference, name) VALUES (?, ?)',
+            [req.params.id, name]
+        );
+
+        res.status(201).json({ message: 'Image added successfully' });
+    } catch (error) {
+        console.error('Error adding image to product:', error);
+        res.status(500).json({ error: 'Failed to add image to product' });
+    }
+});
+
 // Get all products from a category
 router.get('/category/:categoryId', async (req, res) => {
     try {
