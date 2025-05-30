@@ -15,6 +15,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get all categories
+router.get('/categories', async (req, res) => {
+    try {
+        const [categories] = await pool.query('SELECT * FROM Category');
+        res.json(categories);
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).json({ error: 'Failed to fetch categories' });
+    }
+});
+
 // Get product by ID
 router.get('/:id', async (req, res) => {
     try {
@@ -155,4 +166,4 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-module.exports = router; 
+module.exports = router;

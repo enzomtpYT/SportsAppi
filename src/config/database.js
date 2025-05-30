@@ -25,7 +25,7 @@ const testConnection = async (retries = 3) => {
             
             return true;
         } catch (err) {
-            console.error(`Connection attempt ${i + 1} failed:`, err.message);
+            console.error(`Connection to mariaDB attempt ${i + 1} failed:`, err.message);
             if (i < retries - 1) {
                 console.log(`Retrying in 5 seconds...`);
                 await new Promise(resolve => setTimeout(resolve, 5000));
