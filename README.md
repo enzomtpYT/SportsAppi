@@ -143,7 +143,7 @@ All API endpoints are protected with authentication middleware. You must provide
 
 #### `GET /api/products`
 - **Description**: Retrieve all products
-- **Response**: Array of product objects with fields: reference, name, description, price
+- **Response**: Array of product objects with fields: reference, name, description, price, categories
 - **Status Codes**:
   - `200 OK`: Successfully retrieved products
   - `500 Internal Server Error`: Failed to fetch products
@@ -152,7 +152,7 @@ All API endpoints are protected with authentication middleware. You must provide
 - **Description**: Retrieve a specific product by ID (reference)
 - **Parameters**:
   - `id` (path): Product reference
-- **Response**: Product object with fields: reference, name, description, price
+- **Response**: Product object with fields: reference, name, description, price, categories
 - **Status Codes**:
   - `200 OK`: Successfully retrieved product
   - `404 Not Found`: Product with specified reference not found
@@ -185,7 +185,7 @@ All API endpoints are protected with authentication middleware. You must provide
 - **Description**: Retrieve all products from a specific category
 - **Parameters**:
   - `categoryId` (path): Category ID
-- **Response**: Array of product objects
+- **Response**: Array of product objects with fields: reference, name, description, price, categories
 - **Status Codes**:
   - `200 OK`: Successfully retrieved products
   - `500 Internal Server Error`: Failed to fetch products
@@ -233,10 +233,12 @@ All API endpoints are protected with authentication middleware. You must provide
 
 #### `GET /api/products/categories`
 - **Description**: Retrieve all product categories
-- **Response**: Array of category objects
+- **Response**: Array of category objects with fields: id_category, name
 - **Status Codes**:
   - `200 OK`: Successfully retrieved categories
   - `500 Internal Server Error`: Failed to fetch categories
+
+> **Note**: The `categories` field returned in product endpoints is an array of objects with `id_category` and `name` fields.
 
 ### Order Endpoints
 
