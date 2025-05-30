@@ -12,6 +12,7 @@ This project is a simple REST API built using Express and Node.js/Bun. It provid
     - [User Endpoints](#user-endpoints)
       - [`GET /api/users`](#get-apiusers)
       - [`GET /api/users/:id`](#get-apiusersid)
+      - [`GET /api/users/login/:login`](#get-apiusersloginlogin)
       - [`POST /api/users`](#post-apiusers)
       - [`PUT /api/users/:id`](#put-apiusersid)
       - [`DELETE /api/users/:id`](#delete-apiusersid)
@@ -90,6 +91,16 @@ All API endpoints are protected with authentication middleware. You must provide
 - **Status Codes**:
   - `200 OK`: Successfully retrieved user
   - `404 Not Found`: User with specified ID not found
+  - `500 Internal Server Error`: Failed to fetch user
+
+#### `GET /api/users/login/:login`
+- **Description**: Retrieve a user by login name (username)
+- **Parameters**: 
+  - `login` (path): User login/username
+- **Response**: User object with limited fields: id_user, login, password
+- **Status Codes**:
+  - `200 OK`: Successfully retrieved user
+  - `404 Not Found`: User with specified login not found
   - `500 Internal Server Error`: Failed to fetch user
 
 #### `POST /api/users`
