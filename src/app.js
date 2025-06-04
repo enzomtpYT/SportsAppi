@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -10,15 +9,22 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-const corsOptions = {
-    origin: function (origin, callback) {
-        return callback(null, true);
-    },
-    credentials: true
-};
-
-app.use(cors(corsOptions));
+app.use((req, res, next) => {
+    // Allow requests from any origin
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    // Allow credentials
+    res.header('Access-Control-Allow-Credentials', 'true');
+    // Allow specific methods
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    // Allow specific headers
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // Handle preflight OPTIONS requests
+    if (req.method === 'OPTIONS') {
+        return res.status(200).send();
+    }
+    next();
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
