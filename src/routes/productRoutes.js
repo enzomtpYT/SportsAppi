@@ -7,11 +7,35 @@ const pool = require('../config/database');
 // Get all products
 router.get('/', async (req, res) => {
     try {
+        // Get all products
         const [products] = await pool.query('SELECT CONVERT(reference USING utf8) as reference, name, description, price FROM Product');
-        res.json(products);
+        
+        // Get categories for each product
+        const productsWithCategories = await Promise.all(products.map(async (product) => {
+            const [categories] = await pool.query(
+                'SELECT c.id_category, c.name FROM Category c ' +
+                'JOIN Product_Category pc ON c.id_category = pc.id_category ' +
+                'WHERE pc.reference = ?',
+                [product.reference]
+            );
+            return { ...product, categories };
+        }));
+        
+        res.json(productsWithCategories);
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ error: 'Failed to fetch products' });
+    }
+});
+
+// Get all categories
+router.get('/categories', async (req, res) => {
+    try {
+        const [categories] = await pool.query('SELECT * FROM Category');
+        res.json(categories);
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).json({ error: 'Failed to fetch categories' });
     }
 });
 
@@ -22,7 +46,18 @@ router.get('/:id', async (req, res) => {
         if (products.length === 0) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        res.json(products[0]);
+        
+        // Get categories for the product
+        const [categories] = await pool.query(
+            'SELECT c.id_category, c.name FROM Category c ' +
+            'JOIN Product_Category pc ON c.id_category = pc.id_category ' +
+            'WHERE pc.reference = ?',
+            [req.params.id]
+        );
+        
+        const productWithCategories = { ...products[0], categories };
+        
+        res.json(productWithCategories);
     } catch (error) {
         console.error('Error fetching product:', error);
         res.status(500).json({ error: 'Failed to fetch product' });
@@ -72,12 +107,24 @@ router.post('/:id/images', async (req, res) => {
 router.get('/category/:categoryId', async (req, res) => {
     try {
         const [products] = await pool.query(
-            'SELECT CONVERT(p.reference USING utf8) as reference, p.name, p.description, p.price, p. FROM Product p ' +
+            'SELECT CONVERT(p.reference USING utf8) as reference, p.name, p.description, p.price FROM Product p ' +
             'JOIN Product_Category pc ON p.reference = pc.reference ' +
             'WHERE pc.id_category = ?',
             [req.params.categoryId]
         );
-        res.json(products);
+        
+        // Get categories for each product
+        const productsWithCategories = await Promise.all(products.map(async (product) => {
+            const [categories] = await pool.query(
+                'SELECT c.id_category, c.name FROM Category c ' +
+                'JOIN Product_Category pc ON c.id_category = pc.id_category ' +
+                'WHERE pc.reference = ?',
+                [product.reference]
+            );
+            return { ...product, categories };
+        }));
+        
+        res.json(productsWithCategories);
     } catch (error) {
         console.error('Error fetching products by category:', error);
         res.status(500).json({ error: 'Failed to fetch products by category' });
@@ -155,4 +202,4 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-module.exports = router; 
+module.exports = router;

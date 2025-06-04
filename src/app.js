@@ -4,6 +4,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const authMiddleware = require('./middleware/authMiddleware');
 require('dotenv').config();
 
 const app = express();
@@ -21,10 +22,10 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
+// Routes - All API routes are protected with authentication middleware
+app.use('/api/users', authMiddleware, userRoutes);
+app.use('/api/products', authMiddleware, productRoutes);
+app.use('/api/orders', authMiddleware, orderRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

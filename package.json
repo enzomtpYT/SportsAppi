@@ -1,7 +1,7 @@
 {
-  "name": "my-rest-api",
-  "version": "1.0.0",
-  "description": "A simple REST API built with Express and Node.js",
+  "name": "sportsappi",
+  "version": "1.0.5",
+  "description": "A simple REST API built with Express and Node.js/Bun",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",

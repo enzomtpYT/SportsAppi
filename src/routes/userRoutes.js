@@ -74,4 +74,18 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// Get user by login - only returns ID, username and password
+router.get('/login/:login', async (req, res) => {
+    try {
+        const [users] = await pool.query('SELECT CONVERT(id_user USING utf8) as id_user, login, password FROM User_ WHERE login = ?', [req.params.login]);
+        if (users.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json(users[0]);
+    } catch (error) {
+        console.error('Error fetching user by login:', error);
+        res.status(500).json({ error: 'Failed to fetch user by login' });
+    }
+});
+
 module.exports = router; 
